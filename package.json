@@ -1,0 +1,23 @@
+{
+  "name": "discord-hook",
+  "version": "1.0.6",
+  "description": "Allows you to send webhooks",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "discord",
+    "discord-webhooks",
+    "webhook",
+    "webhooks"
+  ],
+  "author": "SUPERCHIEFYT (Elara-Discord-Bots, Elara-Services)",
+  "license": "ISC",
+  "dependencies": {
+    "superagent": "^6.0.0"
+  },
+  "peerDependencies": {
+    "discord.js": "12.3.1"
+  }
+}
