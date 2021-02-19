@@ -33,13 +33,16 @@ const {validateURL, error, limits, split, resolveColor, status} = require("./uti
      * @property {AuthorOptions} author
      * @property {FieldOptions[]} fields
      */
+
 module.exports = class WebhookService{
+    
     /**
      * @param {string} url 
      * @param {Object} [webhookOptions]
      * @param {string} [webhookOptions.username]
      * @param {string} [webhookOptions.avatar_url
      */
+    
     constructor(url, webhookOptions = { username: "", avatar_url: "" }){
         if(!validateURL(url)) return error(`You didn't provide any webhook url or you provided an invalid webhook url`);
         this.url = url;
@@ -53,6 +56,7 @@ module.exports = class WebhookService{
             content: ""
         };
     };
+    
     /**
      * @param {string} text 
      */
@@ -63,6 +67,7 @@ module.exports = class WebhookService{
         this.req.content = `${text}${this.req.content ? `, ${this.req.content}` : ""}`;
         return this;
     };
+    
     /**
      * @param {string} name 
      */
@@ -79,6 +84,7 @@ module.exports = class WebhookService{
      * @param {string} name 
      */
     name(name){ return this.username(name) };
+    
     /**
      * @param {string} url 
      */
@@ -88,10 +94,23 @@ module.exports = class WebhookService{
         this.req.avatar_url = url;
         return this;
     };
+    
     /**
      * @param {string} url 
      */
     icon(url){ return this.avatar(url); }
+    
+    /**
+     * @description This sets the name and icon for the webhook.
+     * @param {?string} [name]
+     * @param {?string} [avatar]
+    */
+    both(name = "", avatar = "") {
+        this.name(name)
+            .avatar(avatar);
+        return this;
+    }
+    
     /**
      * @param {string} text 
      */
@@ -102,6 +121,7 @@ module.exports = class WebhookService{
         this.req.content = this.req.content += text;
         return this;
     };
+    
     /**
      * @param {Embed} embed 
      */
@@ -113,6 +133,7 @@ module.exports = class WebhookService{
         this.req.embeds.push(embed);
         return this;
     };
+    
     /**
      * @param {Embed[]} embeds 
      */
@@ -120,14 +141,17 @@ module.exports = class WebhookService{
         for (const embed of embeds){ this.addEmbed(embed); };
         return this;
     };
+    
     /**
      * @param {Embed} embed
      */
     embed(embed){ return this.addEmbed(embed); };
+    
     /**
      * @param {Embed[]} embeds 
      */
     embeds(embeds){ return this.addEmbeds(embeds); };
+    
     /**
      * @param {string} name 
      * @param {string} value 
@@ -139,6 +163,7 @@ module.exports = class WebhookService{
         if(!value) name = this.helpers.blank;
         return { name, value, inline };
     };
+    
     async send(){
         if((this.req.content || "").length === 0 && (this.req.embeds || []).length === 0) return error(`You didn't add anything to be sent.`)
         let djs = null;
@@ -172,6 +197,7 @@ module.exports = class WebhookService{
             return s.data;
         }
     };
+    
     /**
      * @description This allows you to edit a message for a webhook!
      * @param {string} messageID 
