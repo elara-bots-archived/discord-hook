@@ -36,16 +36,19 @@ const {validateURL, error, limits, split, resolveColor, status} = require("./uti
 module.exports = class WebhookService{
     /**
      * @param {string} url 
+     * @param {Object} [webhookOptions]
+     * @param {string} [webhookOptions.username]
+     * @param {string} [webhookOptions.avatar_url
      */
-    constructor(url){
+    constructor(url, webhookOptions = { username: "", avatar_url: "" }){
         if(!validateURL(url)) return error(`You didn't provide any webhook url or you provided an invalid webhook url`);
         this.url = url;
         this.helpers = {
             blank: "\u200b"
         }
         this.req = {
-            username: "",
-            avatar_url: "",
+            username: webhookOptions ? (webhookOptions.username || "") : "",
+            avatar_url: webhookOptions ? (webhookOptions.avatar_url || "") : "",
             embeds: [],
             content: ""
         };
@@ -71,6 +74,7 @@ module.exports = class WebhookService{
         this.req.username = name;
         return this;
     };
+   
     /**
      * @param {string} name 
      */
@@ -131,9 +135,9 @@ module.exports = class WebhookService{
      * @returns {Object}
      */
     field(name, value, inline = false){
-        if(!name) name = "\u200b";
-        if(!value) name = "\u200b";
-        return {name, value, inline};
+        if(!name) name = this.helpers.blank;
+        if(!value) name = this.helpers.blank;
+        return { name, value, inline };
     };
     async send(){
         if((this.req.content || "").length === 0 && (this.req.embeds || []).length === 0) return error(`You didn't add anything to be sent.`)
@@ -155,7 +159,7 @@ module.exports = class WebhookService{
         }else{
             let s = await require("superagent")
             .post(this.url)
-            .query({wait: true})
+            .query({ wait: true })
             .send({
                 "username": this.req.username,
                 "avatar_url": this.req.avatar_url,
