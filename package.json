@@ -1,6 +1,6 @@
 {
   "name": "discord-hook",
-  "version": "1.0.9",
+  "version": "1.1.0",
   "description": "Allows you to send webhooks",
   "main": "src/index.js",
   "scripts": {
