@@ -50,7 +50,7 @@ module.exports = class Webhook{
     if(this.embed.fields.length > 25 || (name === "" && value === "")) return this;
     if(name.length > limits.fields.name) name = name.slice(0, limits.fields.name);
     if(name.length > limits.fields.value) value = value.slice(0, limits.fields.value);
-    this.embed.fields.push({name: name, value: value, inline: inline});
+    this.embed.fields.push({ name, value, inline });
     return this;
   };
   /**

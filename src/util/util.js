@@ -107,7 +107,5 @@ module.exports = {
      * @param {boolean} status
      * @param {object|string} data
      */
-    status: (status, data) => {
-      return {status, data};
-    }
+    status: (status, data) => ({status, data})
 }

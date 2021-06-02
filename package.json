@@ -1,6 +1,6 @@
 {
   "name": "discord-hook",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "Allows you to send webhooks",
   "main": "src/index.js",
   "scripts": {
@@ -14,8 +14,9 @@
   ],
   "author": "SUPERCHIEFYT (Elara-Discord-Bots, Elara-Services)",
   "license": "ISC",
+  "types": "./typings/index.d.ts",
   "dependencies": {
-    "superagent": "^6.0.0"
+    "superagent": "^6.1.0"
   },
   "peerDependencies": {
     "discord.js": "^12.x"
