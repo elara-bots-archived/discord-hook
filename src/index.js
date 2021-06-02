@@ -99,7 +99,7 @@ module.exports = class Webhook{
             let s = await require("superagent")
             .post(this.url)
             .query({ wait: true })
-            .set(authorization ? { "Authorization": `Bot ${authorization}` } : undefined)
+            .set(authorization ? { "Authorization": `Bot ${authorization}` } : {})
             .send(this.req)
             .then(r => status(true, r.body))
             .catch(err => status(false, err));
