@@ -50,7 +50,9 @@ declare module "discord-hook" {
         public icon(url: string): this;
         public embed(embed: Embed): this;
         public embeds(embeds: Embed[]): this;
+        public button(data: Component): this;
         public buttons(data: Component[]): this;
+        public addbutton(data: Component): this;
         public addButtons(data: Component[]): this;
         public addEmbed(embed: Embed): this;
         public addEmbeds(embeds: Embed[]): this;
