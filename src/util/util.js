@@ -84,7 +84,7 @@ module.exports = {
     limits: { // These are the limits by Discord themselves.
         content: 2000,
         title: 256,
-        description: 2048,
+        description: 4096,
         username: 80,
         fields: {
             name: 256,
