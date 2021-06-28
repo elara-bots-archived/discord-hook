@@ -85,7 +85,8 @@ module.exports = class Webhook{
             let r = split(this.url);
             if(!r) return error(`I was unable to fetch the url properly.`);
             let hook = new djs(r.id, r.token)
-            let s = await hook.send(this.req.content, {
+            let s = await hook.send({
+                content: this.req.content,
                 embeds: this.req.embeds, 
                 username: this.req.username, 
                 avatarURL: this.req.avatar_url,
