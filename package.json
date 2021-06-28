@@ -1,6 +1,6 @@
 {
   "name": "discord-hook",
-  "version": "1.1.3",
+  "version": "1.1.4",
   "description": "Allows you to send webhooks",
   "main": "src/index.js",
   "scripts": {
@@ -18,7 +18,7 @@
   "dependencies": {
     "superagent": "^6.1.0"
   },
-  "peerDependencies": {
-    "discord.js": "^12.x"
+  "optionalDependencies": {
+    "discord.js": "^13.0.0-dev.e37ef3af2151e556527ccd8e98ec531bdcc0ed70"
   }
 }
