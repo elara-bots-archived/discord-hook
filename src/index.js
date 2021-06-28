@@ -6,10 +6,10 @@ module.exports = class Webhook{
         this.url = url;
         this.helpers = { blank: "\u200b" };
         this.req = {
-            username: options ? (options.username || "") : "",
-            avatar_url: options ? (options.avatar_url || "") : "",
+            username: options ? (options.username || null) : null,
+            avatar_url: options ? (options.avatar_url || null) : null,
             embeds: [],
-            content: "",
+            content: null,
             components: []
         };
     };
@@ -86,11 +86,11 @@ module.exports = class Webhook{
             if(!r) return error(`I was unable to fetch the url properly.`);
             let hook = new djs(r.id, r.token)
             let s = await hook.send({
-                content: this.req.content,
-                embeds: this.req.embeds, 
-                username: this.req.username, 
-                avatarURL: this.req.avatar_url,
-                components: this.req.components
+                content: this.req.content ?? null,
+                embeds: this.req.embeds ?? null, 
+                username: this.req.username ?? null, 
+                avatarURL: this.req.avatar_url ?? null,
+                components: this.req.components ?? null
             })
             .then(r => status(true, r))
             .catch(err => status(false, err));
