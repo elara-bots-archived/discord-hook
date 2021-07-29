@@ -1,4 +1,4 @@
-const {validateURL, error, limits, split, resolveColor, status} = require("./util/util");
+const { validateURL, error, limits, resolveColor, status } = require("./util/util");
 
 module.exports = class Webhook{
     constructor(url, options = { username: "", avatar_url: ""}){
@@ -6,8 +6,8 @@ module.exports = class Webhook{
         this.url = url;
         this.helpers = { blank: "\u200b" };
         this.req = {
-            username: options ? (options.username || null) : null,
-            avatar_url: options ? (options.avatar_url || null) : null,
+            username: options?.username ?? null,
+            avatar_url: options?.avatar_url ?? null,
             embeds: [],
             content: null,
             components: []
@@ -20,14 +20,12 @@ module.exports = class Webhook{
     buttons(data = []) { return this.addButtons(data); };
     button(data) { return this.addButton(data); };
     mention(text = ""){
-        if(!text) return this;
         if(typeof text !== "string") return this;
         if(!(text.startsWith("<@") && text.endsWith(">"))) return this;
         this.req.content = `${text}${this.req.content ? `, ${this.req.content}` : ""}`;
         return this;
     };
     username(name = ""){
-        if(!name) return this;
         if(typeof name !== "string") return this;
         if(name.length < 1) return this;
         if(name.length > limits.username) name = name.slice(0, limits.username);
@@ -36,7 +34,7 @@ module.exports = class Webhook{
     };
     avatar(url = ""){
         if(!url) return this;
-        if(!url.match(/http?s:\/\//g)) return this;
+        if(!url.match(/https?:\/\//g)) return this;
         this.req.avatar_url = url;
         return this;
     };
@@ -45,7 +43,6 @@ module.exports = class Webhook{
         return this;
     }
     content(text = ""){
-        if(!text) return this;
         if(typeof text !== "string") return this;
         if(text.length > limits.content) text = text.slice(0, limits.content);
         this.req.content = this.req.content += text;
@@ -78,13 +75,15 @@ module.exports = class Webhook{
     
     async send(force = false, authorization = ""){
         force = Boolean(force);
-        if((this.req.content || "").length === 0 && (this.req.embeds || []).length === 0 && (this.req.components || []).length === 0) return error(`You didn't add anything to be sent.`)
+        if(!this.req.content?.length && !this.req.embeds?.length && !this.req.components?.length) return error(`You didn't add anything to be sent.`)
         let djs = null;
-        try{ djs = require("discord.js").WebhookClient; }catch{};
+        try{ 
+            djs = require("discord.js").WebhookClient; 
+        }catch{
+            
+        };
         if(typeof djs === "function" && !force){
-            let r = split(this.url);
-            if(!r) return error(`I was unable to fetch the url properly.`);
-            let hook = new djs(r.id, r.token)
+            let hook = new djs(this.url)
             let s = await hook.send({
                 content: this.req.content ?? null,
                 embeds: this.req.embeds ?? null, 
@@ -110,7 +109,7 @@ module.exports = class Webhook{
     };
     async edit(messageID){
         if(!messageID) return error(`You didn't provide a message ID`);
-        if((this.req.content || "").length === 0 && (this.req.embeds || []).length === 0 && (this.req.components || []).length === 0) return error(`You didn't add anything to be sent.`)
+        if(!this.req.content?.length && !this.req.embeds?.length && !this.req.components?.length) return error(`You didn't add anything to be sent.`)
         return await require("superagent")
         .patch(`${this.url}/messages/${messageID}`)
         .send(this.req)
