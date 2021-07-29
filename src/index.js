@@ -83,7 +83,7 @@ module.exports = class Webhook{
             
         };
         if(typeof djs === "function" && !force){
-            let hook = new djs(this.url)
+            let hook = new djs({ url: this.url })
             let s = await hook.send({
                 content: this.req.content ?? null,
                 embeds: this.req.embeds ?? null, 
