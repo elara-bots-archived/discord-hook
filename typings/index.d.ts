@@ -29,7 +29,7 @@ declare module "discord-hook" {
     };
 
     class Webhook {
-        public constructor(url: string, options?: { username?: string, avatar_url?: string });
+        public constructor(url: string, options?: { username?: string, avatar_url?: string, threadId?: string });
         private url: string;
         public helpers: {
             blank: string;
@@ -39,7 +39,8 @@ declare module "discord-hook" {
             avatar_url: string;
             content: string;
             embeds: Embed[];
-            components: Component[]
+            components: Component[];
+            thread_id: string;
         };
         public both(username: string, avatar: string): this;
         public content(text: string): this;
