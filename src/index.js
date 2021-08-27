@@ -1,16 +1,17 @@
 const { validateURL, error, limits, resolveColor, status } = require("./util/util");
 
 module.exports = class Webhook{
-    constructor(url, options = { username: "", avatar_url: ""}){
+    constructor(url, options = { username: "", avatar_url: "", threadId: "" }){
         if(!validateURL(url)) return error(`You didn't provide any webhook url or you provided an invalid webhook url`);
         this.url = url;
         this.helpers = { blank: "\u200b" };
         this.req = {
-            username: options?.username ?? null,
-            avatar_url: options?.avatar_url ?? null,
+            username: options?.username ?? undefined,
+            avatar_url: options?.avatar_url ?? undefined,
             embeds: [],
-            content: null,
-            components: []
+            content: undefined,
+            components: [],
+            thread_id: options.threadId ?? undefined
         };
     };
     name(name = ""){ return this.username(name) };
@@ -45,7 +46,8 @@ module.exports = class Webhook{
     content(text = ""){
         if(typeof text !== "string") return this;
         if(text.length > limits.content) text = text.slice(0, limits.content);
-        this.req.content = this.req.content += text;
+        if(this.req.content) this.req.content = this.req.content += text;
+        else this.req.content = text;
         return this;
     };
     addEmbed(embed){
@@ -85,11 +87,12 @@ module.exports = class Webhook{
         if(typeof djs === "function" && !force){
             let hook = new djs({ url: this.url })
             let s = await hook.send({
-                content: this.req.content ?? null,
-                embeds: this.req.embeds ?? null, 
-                username: this.req.username ?? null, 
-                avatarURL: this.req.avatar_url ?? null,
-                components: this.req.components ?? null
+                content: this.req.content ?? undefined,
+                embeds: this.req.embeds ?? undefined, 
+                username: this.req.username ?? undefined, 
+                avatarURL: this.req.avatar_url ?? undefined,
+                components: this.req.components ?? undefined,
+                threadId: this.req.thread_id ?? undefined
             })
             .then(r => status(true, r))
             .catch(err => status(false, err));
