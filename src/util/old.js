@@ -151,7 +151,7 @@ module.exports = class Webhook{
     return this;
   };
   async send(){
-    let res = new (require("./index"))(this.webhook)
+    let res = new (require("../index"))(this.webhook)
     return await res
     .username(this.request.username)
     .icon(this.request.avatar_url)
