@@ -36,12 +36,9 @@ module.exports = {
           if (color === 'RANDOM') return Math.floor(Math.random() * (0xFFFFFF + 1));
           if (color === 'DEFAULT') return 0;
           color = Colors[color] || parseInt(color.replace('#', ''), 16);
-        } else if (Array.isArray(color)) {
-          color = (color[0] << 16) + (color[1] << 8) + color[2];
-        }
+        } else if (Array.isArray(color)) color = (color[0] << 16) + (color[1] << 8) + color[2];
         if (color < 0 || color > 0xFFFFFF) color = 0;
         else if (color && isNaN(color)) color = 0;
-    
         return color;
     },
     /**
@@ -49,11 +46,9 @@ module.exports = {
      * @returns {boolean}
      */
     validateURL: (url) => {
-        if(!url) return false;
-        if(typeof url !== "string") return false
-        let i = url.match(/http?s?:\/\/(www.discord.com|www.discordapp.com|discord.com|discordapp.com)\/api\/webhooks\//gi);
-        if(!Array.isArray(i)) return false;
-        return i.length === 0 ? false : true
+        if(!url || typeof url !== "string") return false;
+        if(!url.match(/https?:\/\/(www.|canary.|ptb.)?discord(app)?.com\/api\/|https?:\/\/services.superchiefyt.workers.dev/gi)) return false;
+        return true;
     },
     error: (e) => {
         throw new Error(`[${pack.name}, ${pack.version}]: ${e}`);
@@ -95,17 +90,13 @@ module.exports = {
      * @param {string} url
      */
     split: (url) => {
-        let t = url.replace(/http?s?:\/\/(discord.com|discordapp.com)\/api\/webhooks\//gi, "").replace("www.", "").split("/");
-        if(!t[0]) return null;
-        if(!t[1]) return null;
-        return {
-            id: t[0],
-            token: t[1]
-        }
+        let [ id, token ] = url.split("webhooks/")[1].split("/") || [ null, null ];
+        if(!id || !token) return null;
+        return { id, token };
     },
     /**
      * @param {boolean} status
      * @param {object|string} data
      */
-    status: (status, data) => ({status, data})
+    status: (status, data) => ({ status, data })
 }
