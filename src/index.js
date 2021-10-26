@@ -21,8 +21,7 @@ module.exports = class Webhook{
     buttons(data = []) { return this.addButtons(data); };
     button(data) { return this.addButton(data); };
     mention(text = ""){
-        if(typeof text !== "string") return this;
-        if(!(text.startsWith("<@") && text.endsWith(">"))) return this;
+        if(typeof text !== "string" || !text.match(/<@(!|&)?/gi)) return this;
         this.req.content = `${text}${this.req.content ? `, ${this.req.content}` : ""}`;
         return this;
     };
@@ -34,8 +33,7 @@ module.exports = class Webhook{
         return this;
     };
     avatar(url = ""){
-        if(!url) return this;
-        if(!url.match(/https?:\/\//g)) return this;
+        if(!url || !url.match(/https?:\/\//gi)) return this;
         this.req.avatar_url = url;
         return this;
     };
@@ -71,7 +69,7 @@ module.exports = class Webhook{
 
     field(name, value, inline = false){
         if(!name) name = this.helpers.blank;
-        if(!value) name = this.helpers.blank;
+        if(!value) value = this.helpers.blank;
         return { name, value, inline };
     };
     
@@ -79,11 +77,7 @@ module.exports = class Webhook{
         force = Boolean(force);
         if(!this.req.content?.length && !this.req.embeds?.length && !this.req.components?.length) return error(`You didn't add anything to be sent.`)
         let djs = null;
-        try{ 
-            djs = require("discord.js").WebhookClient; 
-        }catch{
-            
-        };
+        try{ djs = require("discord.js").WebhookClient; }catch{ };
         if(typeof djs === "function" && !force){
             let hook = new djs({ url: this.url })
             let s = await hook.send({
@@ -95,8 +89,8 @@ module.exports = class Webhook{
                 threadId: this.req.thread_id ?? undefined
             })
             .then(r => status(true, r))
-            .catch(err => status(false, err));
-            if(s.status !== true) return error(s.data);
+            .catch(e => status(false, e));
+            if(!s.status) return error(s.data);
             return s.data;
         }else{
             let s = await require("superagent")
@@ -105,8 +99,8 @@ module.exports = class Webhook{
             .set(authorization ? { "Authorization": `Bot ${authorization}` } : {})
             .send(this.req)
             .then(r => status(true, r.body))
-            .catch(err => status(false, err));
-            if(s.status !== true) return error(s.data);
+            .catch(e => status(false, e));
+            if(!s.status) return error(s.data);
             return s.data;
         }
     };
