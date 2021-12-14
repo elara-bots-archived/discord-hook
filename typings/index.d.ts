@@ -45,21 +45,33 @@ declare module "discord-hook" {
         public both(username: string, avatar: string): this;
         public content(text: string): this;
         public mention(text: string): this;
-        public name(name: string): this;
         public username(name: string): this;
         public avatar(url: string): this;
-        public icon(url: string): this;
         public embed(embed: Embed): this;
         public embeds(embeds: Embed[]): this;
         public button(data: Component): this;
         public buttons(data: Component[]): this;
-        public addbutton(data: Component): this;
-        public addButtons(data: Component[]): this;
-        public addEmbed(embed: Embed): this;
-        public addEmbeds(embeds: Embed[]): this;
         public field(name: string, value: string, inline?: boolean): { name: string, value: string, inline: boolean };
         public send(force?: boolean, authorization?: string): Promise<any>;
         public edit(messageID: string): Promise<any>;
+
+        /** @deprecated - Use .username() */
+        public name(name: string): this;
+
+        /** @deprecated - Use .avatar() */
+        public icon(url: string): this;
+
+        /** @deprecated - Use .button() */
+        public addbutton(data: Component): this;
+        
+        /** @deprecated - Use .buttons() */
+        public addButtons(data: Component[]): this;
+        
+        /** @deprecated - Use .embed() */
+        public addEmbed(embed: Embed): this;
+        
+        /** @deprecated - Use .embeds() */
+        public addEmbeds(embeds: Embed[]): this;
     };
 
     export = Webhook;

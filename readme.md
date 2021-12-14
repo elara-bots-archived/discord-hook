@@ -5,14 +5,17 @@ Things with `[]` next to them means an array of that thing.
 
 ```js
 const Webhook = require("discord-hook"),
-      webhook = new Webhook("https://discord.com/api/webhooks/.....");
+      webhook = new Webhook("https://discord.com/api/webhooks/.....", { 
+          username: "The username of the webhook", 
+          avatar_url: "The avatar/icon of the webhook" 
+    });
       webhook
       .embeds(EMBED_DATA[])
       .embed(EMBED_DATA) // Look below for the EMBED_DATA information
       .content(`The content of the message`)
       .mention(`<@USERID>`) // or <@&ROLEID>
-      .username(`The username of the webhook`) // or ".name()"
-      .icon(`The avatar/icon of the webhook`) // or ".avatar()"
+      .username(`The username of the webhook`) 
+      .avatar(`The avatar/icon of the webhook`)
       .send(); // This returns the message object from the webhook being sent
 ```
 
@@ -26,7 +29,7 @@ const webhook = new (require("discord-hook"))("https://discord.com/api/webhooks/
       .content(`The content of the message`)
       .mention(`<@USERID>`) // or <@&ROLEID>
       .username(`The username of the webhook`) // or ".name()"
-      .icon(`The avatar/icon of the webhook`) // or ".avatar()"
+      .avatar(`The avatar/icon of the webhook`) // or ".avatar()"
       .edit(`MESSAGE_ID`);
     // This edits the webhook message in the channel, 
     // NOTE: The webhook url needs to be the webhook that created the message. 
@@ -41,8 +44,9 @@ Description: That provides a blank character "\u200b"
 Method: .field(name, value, inline)
 Description: Returns the {name: "", value: "", inline: false} object
 ```
+-------
 
-
+# This is depercated and will be removed in the future.
 ##### Style from [elara-hook](https://npmjs.com/package/elara-hook)
 ```js
 const Webhook = require("discord-hook"),

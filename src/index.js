@@ -14,12 +14,19 @@ module.exports = class Webhook{
             thread_id: options.threadId ?? undefined
         };
     };
+    /** @deprecated Use .username() */
     name(name = ""){ return this.username(name) };
+        /** @deprecated Use .avatar() */
     icon(url = ""){ return this.avatar(url); };
-    embed(embed){ return this.addEmbed(embed); };
-    embeds(embeds){ return this.addEmbeds(embeds); };
-    buttons(data = []) { return this.addButtons(data); };
-    button(data) { return this.addButton(data); };
+    /** @deprecated - Use .embed() */
+    addEmbed(embed){ return this.embed(embed); };
+    /** @deprecated - Use .embeds() */
+    addEmbeds(embeds){ return this.embeds(embeds); };
+    /** @deprecated - Use .buttons() */
+    addButtons(data = []) { return this.buttons(data); };
+    /** @deprecated - Use .button() */
+    addButton(data) { return this.button(data); };
+
     mention(text = ""){
         if(typeof text !== "string" || !text.match(/<@(!|&)?/gi)) return this;
         this.req.content = `${text}${this.req.content ? `, ${this.req.content}` : ""}`;
@@ -38,7 +45,8 @@ module.exports = class Webhook{
         return this;
     };
     both(name = "", avatar = "") {
-        this.name(name).avatar(avatar);
+        this.username(name)
+        .avatar(avatar);
         return this;
     }
     content(text = ""){
@@ -48,21 +56,21 @@ module.exports = class Webhook{
         else this.req.content = text;
         return this;
     };
-    addEmbed(embed){
+    embed(embed){
         if(this.req.embeds.length > 10) return this;
         if("color" in embed && typeof color === "string") embed.color = resolveColor(embed.color)
         this.req.embeds.push(embed);
         return this;
     };
-    addEmbeds(embeds = {}){
-        for (const embed of embeds) this.addEmbed(embed);
+    embeds(embeds = {}){
+        for (const embed of embeds) this.embed(embed);
         return this;
     };
-    addButtons(data = []) {
-        for (const d of data) this.addButton(d);
+    buttons(data = []) {
+        for (const d of data) this.button(d);
         return this;
     };
-    addButton(data) {
+    button(data) {
         this.req.components.push(data);
         return this;
     };
@@ -105,6 +113,7 @@ module.exports = class Webhook{
             return s.data;
         }
     };
+    
     async edit(messageID){
         if(!messageID) return error(`You didn't provide a message ID`);
         if(!this.req.content?.length && !this.req.embeds?.length && !this.req.components?.length) return error(`You didn't add anything to be sent.`)

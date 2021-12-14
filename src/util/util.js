@@ -1,4 +1,5 @@
 const pack = require(`../../package.json`);
+
 module.exports = {
     Colors: {
         DEFAULT: 0x000000,
