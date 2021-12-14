@@ -7,8 +7,6 @@ Things with `[]` next to them means an array of that thing.
 const Webhook = require("discord-hook"),
       webhook = new Webhook("https://discord.com/api/webhooks/.....");
       webhook
-      .addEmbed(EMBED_DATA)
-      .addEmbeds(EMBED_DATA[])
       .embeds(EMBED_DATA[])
       .embed(EMBED_DATA) // Look below for the EMBED_DATA information
       .content(`The content of the message`)
@@ -23,8 +21,6 @@ const Webhook = require("discord-hook"),
 const webhook = new (require("discord-hook"))("https://discord.com/api/webhooks/....");
 
     webhook
-      .addEmbed(EMBED_DATA)
-      .addEmbeds(EMBED_DATA[])
       .embeds(EMBED_DATA[])
       .embed(EMBED_DATA) // Look below for the EMBED_DATA information
       .content(`The content of the message`)
