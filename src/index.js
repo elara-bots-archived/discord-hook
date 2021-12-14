@@ -79,9 +79,10 @@ module.exports = class Webhook{
         let djs = null;
         try{ djs = require("discord.js").WebhookClient; }catch{ };
         if(typeof djs === "function" && !force){
+            if (!this.req.content) this.req.content = undefined;
             let hook = new djs({ url: this.url })
             let s = await hook.send({
-                content: this.req.content ?? undefined,
+                content: this.req.content,
                 embeds: this.req.embeds ?? undefined, 
                 username: this.req.username ?? undefined, 
                 avatarURL: this.req.avatar_url ?? undefined,
