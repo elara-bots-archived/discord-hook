@@ -1,4 +1,6 @@
 const { validateURL, error, limits, resolveColor, status } = require("./util/util");
+const fetch = require("@elara-services/fetch");
+
 
 module.exports = class Webhook{
     constructor(url, options = { username: "", avatar_url: "", threadId: "" }){
@@ -102,26 +104,32 @@ module.exports = class Webhook{
             if(!s.status) return error(s.data);
             return s.data;
         }else{
-            let s = await require("superagent")
-            .post(this.url)
+            let r = await fetch(this.url, "POST")
             .query({ wait: true })
-            .set(authorization ? { "Authorization": `Bot ${authorization}` } : {})
-            .send(this.req)
-            .then(r => status(true, r.body))
+            .header(authorization ? { "Authorization": `Bot ${authorization}` } : {})
+            .body(this.req)
+            .send()
+            .then(r => {
+                if (![ 200, 201 ].includes(r.statusCode)) return error(r.json());
+                return status(true, r.json())
+            })
             .catch(e => status(false, e));
-            if(!s.status) return error(s.data);
-            return s.data;
+            if (!r.status) return error(s.data);
+            return r.data;
         }
     };
     
     async edit(messageID){
         if(!messageID) return error(`You didn't provide a message ID`);
         if(!this.req.content?.length && !this.req.embeds?.length && !this.req.components?.length) return error(`You didn't add anything to be sent.`)
-        return await require("superagent")
-        .patch(`${this.url}/messages/${messageID}`)
-        .send(this.req)
-        .then((r) => status(true, r.body))
-        .catch((e) => error(e.stack));
+        return await fetch(`${this.url}/messages/${messageID}`, "PATCH")
+        .body(this.req)
+        .send()
+        .then(r => {
+            if (![ 200, 201 ].includes(r.statusCode)) return error(r.json());
+            return status(true, r.json())
+        })
+        .catch(e => error(e));
     }
 };
 
