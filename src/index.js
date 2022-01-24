@@ -1,6 +1,11 @@
 const { validateURL, error, limits, resolveColor, status } = require("./util/util");
 const fetch = require("@elara-services/fetch");
+let Discord = null;
 
+try {
+    Discord = require("discord.js");
+// eslint-disable-next-line no-empty
+} catch {}
 
 module.exports = class Webhook{
     constructor(url, options = { username: "", avatar_url: "", threadId: "" }){
@@ -86,13 +91,18 @@ module.exports = class Webhook{
     async send(force = false, authorization = ""){
         force = Boolean(force);
         if(!this.req.content?.length && !this.req.embeds?.length && !this.req.components?.length) return error(`You didn't add anything to be sent.`)
-        let djs = null;
-        try{ djs = require("discord.js").WebhookClient; }catch{ };
-        if(typeof djs === "function" && !force){
+        if(Discord && typeof Discord.WebhookClient === "function" && !force){
             if (!this.req.content) this.req.content = undefined;
-            let [ id, token ] = this.url.split("/webhooks/")[1].split("/");
-            let hook = new djs({ url: this.url, id, token: token?.split?.("?")?.[0] ?? "" })
-            let s = await hook.send({
+            let client = null,
+                version = parseInt(Discord.version.split(".")[0]);
+            if (version <= 12) {
+                let [ id, token ] = this.url.split("/webhooks/")[1].split("/");
+                client = new Discord.WebhookClient(id, token.split("?")[0] ?? "");
+            } else 
+            if (version >= 13) client = new Discord.WebhookClient({ url: this.url });
+            else return status(false, `You provided an invalid discord.js version!`);
+            if (!client) return status(false, `You provided an invalid discord.js version!`);
+            let s = await client.send({
                 content: this.req.content,
                 embeds: this.req.embeds ?? undefined, 
                 username: this.req.username ?? undefined, 
@@ -115,7 +125,7 @@ module.exports = class Webhook{
                 return status(true, r.json())
             })
             .catch(e => status(false, e));
-            if (!r.status) return error(s.data);
+            if (!r.status) return error(r.data);
             return r.data;
         }
     };
