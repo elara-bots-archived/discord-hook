@@ -12,13 +12,14 @@ module.exports = class Webhook{
         if(!validateURL(url)) return error(`You didn't provide any webhook url or you provided an invalid webhook url`);
         this.url = url;
         this.helpers = { blank: "\u200b" };
+        if (typeof options !== "object") options = { username: "", avatar_url: "", threadId: "" }
         this.req = {
-            username: options?.username ?? undefined,
-            avatar_url: options?.avatar_url ?? undefined,
+            username: options.username || undefined,
+            avatar_url: options.avatar_url || undefined,
             embeds: [],
             content: undefined,
             components: [],
-            thread_id: options.threadId ?? undefined
+            thread_id: options.threadId || undefined
         };
     };
     /** @deprecated Use .username() */
@@ -90,25 +91,25 @@ module.exports = class Webhook{
     
     async send(force = false, authorization = ""){
         force = Boolean(force);
-        if(!this.req.content?.length && !this.req.embeds?.length && !this.req.components?.length) return error(`You didn't add anything to be sent.`)
+        if(!this.req.content.length && !this.req.embeds.length && !this.req.components.length) return error(`You didn't add anything to be sent.`)
         if(Discord && typeof Discord.WebhookClient === "function" && !force){
             if (!this.req.content) this.req.content = undefined;
             let client = null,
                 version = parseInt(Discord.version.split(".")[0]);
             if (version <= 12) {
                 let [ id, token ] = this.url.split("/webhooks/")[1].split("/");
-                client = new Discord.WebhookClient(id, token.split("?")[0] ?? "");
+                client = new Discord.WebhookClient(id, token.split("?")[0] || "");
             } else 
             if (version >= 13) client = new Discord.WebhookClient({ url: this.url });
             else return status(false, `You provided an invalid discord.js version!`);
             if (!client) return status(false, `You provided an invalid discord.js version!`);
             let s = await client.send({
                 content: this.req.content,
-                embeds: this.req.embeds ?? undefined, 
-                username: this.req.username ?? undefined, 
-                avatarURL: this.req.avatar_url ?? undefined,
-                components: this.req.components ?? undefined,
-                threadId: this.req.thread_id ?? undefined
+                embeds: this.req.embeds || undefined, 
+                username: this.req.username || undefined, 
+                avatarURL: this.req.avatar_url || undefined,
+                components: this.req.components || undefined,
+                threadId: this.req.thread_id || undefined
             })
             .then(r => status(true, r))
             .catch(e => status(false, e));
@@ -132,7 +133,7 @@ module.exports = class Webhook{
     
     async edit(messageID){
         if(!messageID) return error(`You didn't provide a message ID`);
-        if(!this.req.content?.length && !this.req.embeds?.length && !this.req.components?.length) return error(`You didn't add anything to be sent.`)
+        if(!this.req.content.length && !this.req.embeds.length && !this.req.components.length) return error(`You didn't add anything to be sent.`)
         return await fetch(`${this.url}/messages/${messageID}`, "PATCH")
         .body(this.req)
         .send()
