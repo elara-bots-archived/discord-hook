@@ -18,6 +18,6 @@
   "license": "MIT",
   "types": "./typings/index.d.ts",
   "dependencies": {
-    "@elara-services/fetch": "^1.0.0"
+    "@elara-services/fetch": "^1.0.1"
   }
 }
