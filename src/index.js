@@ -91,7 +91,7 @@ module.exports = class Webhook{
     
     async send(force = false, authorization = ""){
         force = Boolean(force);
-        if(!this.req.content.length && !this.req.embeds.length && !this.req.components.length) return error(`You didn't add anything to be sent.`)
+        if(!this.req.content && !this.req.embeds.length && !this.req.components.length) return error(`You didn't add anything to be sent.`)
         if(Discord && typeof Discord.WebhookClient === "function" && !force){
             if (!this.req.content) this.req.content = undefined;
             let client = null,
@@ -133,7 +133,7 @@ module.exports = class Webhook{
     
     async edit(messageID){
         if(!messageID) return error(`You didn't provide a message ID`);
-        if(!this.req.content.length && !this.req.embeds.length && !this.req.components.length) return error(`You didn't add anything to be sent.`)
+        if(!this.req.content && !this.req.embeds.length && !this.req.components.length) return error(`You didn't add anything to be sent.`)
         return await fetch(`${this.url}/messages/${messageID}`, "PATCH")
         .body(this.req)
         .send()
