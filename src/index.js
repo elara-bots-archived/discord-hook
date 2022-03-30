@@ -126,6 +126,7 @@ module.exports = class Webhook{
                 return status(true, r.json())
             })
             .catch(e => status(false, e));
+            console.log(r)
             if (!r.status) return error(r.data);
             return r.data;
         }
