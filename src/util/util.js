@@ -54,29 +54,6 @@ module.exports = {
     error: (e) => {
         throw new Error(`[${pack.name}, ${pack.version}]: ${e}`);
     },
-    emptyEmbed: {
-        title: null,
-        color: null,
-        description: null,
-        timestamp: null,
-        url: null,
-        thumbnail: {
-          url: null
-        },
-        image: {
-          url: null
-        },
-        author: {
-          name: null,
-          icon_url: null,
-          url: null
-        },
-        footer: {
-          text: null,
-          icon_url: null
-        },
-        fields: []
-    },
     limits: { // These are the limits by Discord themselves.
         content: 2000,
         title: 256,
@@ -99,5 +76,21 @@ module.exports = {
      * @param {boolean} status
      * @param {object|string} data
      */
-    status: (status, data) => ({ status, data })
+    status: (status, data) => ({ status, data }),
+
+    /**
+     * @param {string} url 
+     * @returns {({ path: string | undefined, query: string }|null)}
+     */
+    url: (url) => {
+      try {
+        let Url = new URL(url);
+        return {
+          path: Url.pathname.split("api/")[1],
+          query: Url.search
+        }
+      } catch (e) {
+        return null;
+      }
+    }
 }
