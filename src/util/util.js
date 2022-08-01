@@ -88,7 +88,7 @@ module.exports = {
         return {
           path: Url.pathname.split("api/")[1],
           query: Url.search,
-          thread_id: Url.searchParams.get("thread_id") ?? undefined
+          thread_id: Url.searchParams.get("thread_id") || undefined
         }
       } catch (e) {
         return null;
