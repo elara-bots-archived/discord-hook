@@ -80,14 +80,15 @@ module.exports = {
 
     /**
      * @param {string} url 
-     * @returns {({ path: string | undefined, query: string }|null)}
+     * @returns {({ path: string | undefined, query: string, thread_id: string | undefined }|null)}
      */
     url: (url) => {
       try {
         let Url = new URL(url);
         return {
           path: Url.pathname.split("api/")[1],
-          query: Url.search
+          query: Url.search,
+          thread_id: Url.searchParams.get("thread_id") ?? undefined
         }
       } catch (e) {
         return null;

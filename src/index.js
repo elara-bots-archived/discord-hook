@@ -96,7 +96,7 @@ module.exports = class Webhook {
         force = Boolean(force);
         if (!this.data.content && !this.data.embeds.length && !this.data.components.length) return error(`You didn't add anything to be sent.`)
         const Url = url(this.url);
-        let r = await rest.post(`/${Url.path}`, { auth: false, body: this.data, query: makeURLSearchParams({ wait: true, thread_id: this.data.thread_id }) })
+        let r = await rest.post(`/${Url.path}`, { auth: false, body: this.data, query: makeURLSearchParams({ wait: true, thread_id: this.data.thread_id ?? Url.thread_id }) })
             .then(r => status(true, r))
             .catch(e => error(e))
         if (!r.status) return error(r.data);
@@ -108,7 +108,7 @@ module.exports = class Webhook {
         if (!this.data.content && !this.data.embeds.length && !this.data.components.length) return error(`You didn't add anything to be sent.`)
         const Url = url(this.url);
         if (!Url || !Url.path) return error(`You didn't provide a valid webhook?`);
-        return await rest.patch(`/${Url.path}/messages/${messageID}`, { body: this.data, auth: false, query: makeURLSearchParams({ wait: true, thread_id: this.data.thread_id }) })
+        return await rest.patch(`/${Url.path}/messages/${messageID}`, { body: this.data, auth: false, query: makeURLSearchParams({ wait: true, thread_id: this.data.thread_id ?? Url.thread_id }) })
         .then(r => status(true, r))
         .catch(e => error(e));
     }
